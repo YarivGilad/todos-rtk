@@ -1,30 +1,43 @@
 import { test, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { Footer } from "./Footer.view"; 
-import { useStore, TodosStore } from '../../state/store.ts';
+import { Footer } from "./Footer.view";
+import { createStore } from "../../state/configure.store.ts";
+import { addTodo, toggle } from '../../state/todos.slice.ts';
+import { Provider } from 'react-redux';
 
 
-const originalState = useStore.getState();
+let store = createStore();
 
 beforeEach(() => {
-  useStore.setState(originalState);
+  store = createStore()
 });
 
 test('controls visible - when some tasks completed', () => {
-    const state: TodosStore = {...originalState, hasCompleted:()=> true }
-    useStore.setState(state);
-    render( <Footer /> );
-    const controls = screen.getByTitle(/controls/i);
-    expect(controls).toBeInTheDocument();
+  // Arrange
+  store.dispatch(addTodo('some fake title'));
+  const {id} = store.getState().todos[0];
+  store.dispatch(toggle(id));
+  // Act
+  render(
+    <Provider store={store}>
+      <Footer />
+    </Provider>
+  );
+  //Assert
+  const controls = screen.getByTitle(/controls/i);
+  expect(controls).toBeInTheDocument();
 });
 
 test('controls should not exist - when no tasks completed', () => {
-    const state: TodosStore = {...originalState, hasCompleted:()=> false }
-    useStore.setState(state);
-    render( <Footer /> );
-    // .getBy throw an error if item doesn't exist
-    // .queryBy return null if item doesn't exist
-    const controls = screen.queryByTitle(/controls/i);
-    expect(controls).toBeNull();
+
+  render(
+    <Provider store={store}>
+      <Footer />
+    </Provider>
+  );
+  // .getBy throw an error if item doesn't exist
+  // .queryBy return null if item doesn't exist
+  const controls = screen.queryByTitle(/controls/i);
+  expect(controls).toBeNull();
 });
 

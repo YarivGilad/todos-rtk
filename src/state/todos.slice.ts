@@ -86,6 +86,11 @@ const todosSlice = createSlice({
 });
 
 export default todosSlice.reducer;
-export const { addTodo, toggle, remove, removeCompleted, filterTodos } =
-  todosSlice.actions;
+export const { 
+  addTodo, 
+  toggle, 
+  remove, 
+  removeCompleted, 
+  filterTodos 
+} = todosSlice.actions;
 // console.log({ todosSlice: todosSlice });
