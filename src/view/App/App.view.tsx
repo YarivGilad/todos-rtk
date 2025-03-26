@@ -15,7 +15,7 @@ export function App(){
       <h1>Todo App</h1>
       <ListBox>
         <EntryForm />
-        {todos.length > 0 && (
+        {todos?.length > 0 && (
           <>
             <ul>
               {todos.map((todo) => {
